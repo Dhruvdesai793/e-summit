@@ -1,23 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-/* ─── DESIGN SYSTEM ─── */
+/* ─── E-SUMMIT DESIGN SYSTEM ─── */
 @theme {
-  --color-base: #050505;
-  --color-base-light: #0a0a0a;
-  --color-surface: #111111;
-  --color-surface-light: #1a1a1a;
-  --color-gold: #D4A853;
-  --color-gold-light: #E8C878;
-  --color-gold-dark: #B8922F;
-  --color-cream: #F5F0E8;
-  --color-cream-muted: #A8A49C;
+  /* Core Background (Summit Atmosphere) */
+  --color-void: #0f172a;
+  --color-void-light: #1e293b;
 
+  /* Surfaces (Conference Interior) */
+  --color-surface: #1e2a38;
+  --color-surface-light: #2c3e50;
+
+  /* Primary Accents (Sunset Energy) */
+  --color-accent-primary: #f4a261;
+  --color-accent-secondary: #f6bd60;
+  --color-accent-tertiary: #4cc9f0;
+
+  /* Wood Tones */
+  --color-wood-base: #7a4e2d;
+  --color-wood-light: #a47148;
+
+  /* Text System */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e2e8f0;
+  --color-text-muted: #94a3b8;
+
+  /* Glass / Elevation */
+  --color-glass-surface: rgba(255, 255, 255, 0.04);
+  --color-glass-border: rgba(244, 162, 97, 0.25);
+
+  /* Typography */
   --font-display: "Space Grotesk", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --font-body: "Poppins", sans-serif;
 }
 
-/* ─── BASE RESETS ─── */
+/* ─── BASE ─── */
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -28,100 +45,99 @@ html {
 }
 
 body {
-  background-color: #050505;
-  color: #F5F0E8;
-  font-family: "Inter", sans-serif;
+  background-color: #0f172a;
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
   overflow-x: hidden;
 }
 
 ::selection {
-  background: rgba(212, 168, 83, 0.3);
-  color: #F5F0E8;
+  background: rgba(244, 162, 97, 0.25);
+  color: #ffffff;
 }
 
-/* ─── NOISE OVERLAY ─── */
+/* ─── NOISE ─── */
 .noise-bg {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 5;
-  opacity: 0.03;
+  z-index: 1;
+  opacity: 0.02;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   mix-blend-mode: overlay;
 }
 
-/* ─── GLASS CARD ─── */
+/* ─── GLASS ─── */
 .glass {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.glass-gold {
-  background: rgba(212, 168, 83, 0.05);
+.glass-warm {
+  background: rgba(244, 162, 97, 0.05);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(212, 168, 83, 0.15);
+  border: 1px solid rgba(244, 162, 97, 0.2);
 }
 
-/* ─── GRADIENT TEXT ─── */
-.text-gradient-gold {
-  background: linear-gradient(135deg, #D4A853 0%, #E8C878 50%, #D4A853 100%);
+/* ─── GRADIENTS ─── */
+.text-gradient-sunrise {
+  background: linear-gradient(135deg, #f4a261 0%, #f6bd60 50%, #4cc9f0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .text-gradient-white {
-  background: linear-gradient(180deg, #F5F0E8 0%, rgba(245, 240, 232, 0.5) 100%);
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.5) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* ─── GLOW EFFECTS ─── */
-.glow-gold {
-  box-shadow: 0 0 40px rgba(212, 168, 83, 0.15), 0 0 80px rgba(212, 168, 83, 0.05);
+.bg-mountain {
+  background: linear-gradient(180deg, #1e2a38 0%, #0f172a 100%);
 }
 
-.glow-gold-strong {
-  box-shadow: 0 0 30px rgba(212, 168, 83, 0.3), 0 0 60px rgba(212, 168, 83, 0.15), 0 0 120px rgba(212, 168, 83, 0.05);
+.bg-sunset-sky {
+  background: linear-gradient(180deg, rgba(246, 189, 96, 0.1) 0%, #1e2a38 35%, #0f172a 100%);
 }
 
-.text-glow {
-  text-shadow: 0 0 30px rgba(212, 168, 83, 0.4), 0 0 60px rgba(212, 168, 83, 0.1);
+/* ─── GLOW ─── */
+.glow-warm {
+  box-shadow: 0 0 30px rgba(244, 162, 97, 0.12), 0 0 60px rgba(244, 162, 97, 0.04);
 }
 
-/* ─── KEYFRAMES ─── */
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.3;
-  }
-
-  50% {
-    transform: translateY(-15px);
-    opacity: 0.7;
-  }
+.glow-warm-strong {
+  box-shadow: 0 0 20px rgba(244, 162, 97, 0.25), 0 0 50px rgba(244, 162, 97, 0.1);
 }
 
-@keyframes pulse-glow {
-
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
+/* ─── PERFORMANCE ─── */
+.will-animate {
+  will-change: transform, opacity;
 }
 
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 162, 97, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 162, 97, 0.5);
+}
+
+/* ─── MARQUEE ─── */
 @keyframes marquee {
   0% {
     transform: translateX(0);
@@ -132,82 +148,6 @@ body {
   }
 }
 
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes draw-line {
-  from {
-    stroke-dashoffset: 1000;
-  }
-
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.animate-float {
-  animation: float ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
 .animate-marquee {
   animation: marquee 30s linear infinite;
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.8s ease-out forwards;
-}
-
-.animate-shimmer {
-  background-size: 200% 100%;
-  animation: shimmer 3s linear infinite;
-}
-
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #050505;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(212, 168, 83, 0.3);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 168, 83, 0.5);
-}
-
-/* ─── UTILITY ─── */
-.perspective-1200 {
-  perspective: 1200px;
-}
-
-.backface-hidden {
-  backface-visibility: hidden;
 }

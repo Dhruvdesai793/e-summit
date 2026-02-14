@@ -1,8 +1,9 @@
-import React, { useLayoutEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import EventCard from '../components/EventCard'
 import { events } from '../data/events'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useGSAP } from '@gsap/react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -14,111 +15,100 @@ export default function Home() {
     const cardsRef = useRef([])
     const marqueeRef = useRef(null)
 
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-
-            // Hero entrance
-            const tl = gsap.timeline()
-            tl.from(titleRef.current, {
-                y: 60,
+    useGSAP(() => {
+        // Hero entrance
+        const tl = gsap.timeline()
+        tl.from(titleRef.current, {
+            y: 40,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power3.out'
+        })
+            .from(subtitleRef.current, {
+                y: 20,
                 opacity: 0,
-                duration: 1.2,
-                ease: 'power4.out'
-            })
-                .from(subtitleRef.current, {
-                    y: 30,
-                    opacity: 0,
-                    duration: 0.8,
-                    ease: 'power3.out'
-                }, '-=0.5')
-                .from(marqueeRef.current, {
-                    opacity: 0,
-                    duration: 1,
-                    ease: 'power2.out'
-                }, '-=0.3')
-
-            // Card grid reveal
-            gsap.from(cardsRef.current.filter(Boolean), {
-                y: 80,
+                duration: 0.6,
+                ease: 'power3.out'
+            }, '-=0.3')
+            .from(marqueeRef.current, {
                 opacity: 0,
-                scale: 0.97,
-                duration: 1,
-                stagger: 0.1,
-                ease: 'power4.out',
-                scrollTrigger: {
-                    trigger: gridRef.current,
-                    start: 'top 80%',
-                    toggleActions: 'play none none reverse'
-                }
-            })
+                duration: 0.6,
+                ease: 'power3.out'
+            }, '-=0.2')
 
-        }, containerRef)
-
-        return () => ctx.revert()
-    }, [])
+        // Card stagger on scroll
+        gsap.from(cardsRef.current.filter(Boolean), {
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.08,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: gridRef.current,
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            }
+        })
+    }, { scope: containerRef })
 
     const marqueeEvents = [...events, ...events]
 
     return (
-        <div ref={containerRef} className="min-h-screen bg-base text-cream overflow-hidden relative">
+        <div ref={containerRef} className="min-h-screen text-white overflow-hidden relative bg-mountain">
 
-            {/* Ambient */}
+            {/* Subtle warm glow */}
             <div className="fixed inset-0 pointer-events-none -z-10">
-                <div className="absolute top-[-15%] left-[-5%] w-[40%] h-[40%] bg-gold/8 blur-[160px] rounded-full" />
-                <div className="absolute bottom-[-15%] right-[-5%] w-[40%] h-[40%] bg-surface-light/80 blur-[160px] rounded-full" />
+                <div
+                    className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full opacity-15"
+                    style={{ background: 'radial-gradient(ellipse, rgba(244, 162, 97, 0.25) 0%, transparent 70%)' }}
+                />
             </div>
 
             <div className="relative z-10 pt-32 pb-24 px-6 max-w-7xl mx-auto">
 
                 {/* Hero */}
-                <div className="text-center mb-20 space-y-6">
+                <div className="text-center mb-20 space-y-5">
                     <h1
                         ref={titleRef}
-                        className="text-5xl md:text-8xl lg:text-9xl font-display font-bold tracking-[-0.04em] leading-[0.95] text-gradient-white"
+                        className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-[-0.04em] leading-[0.95] text-gradient-white will-animate"
                     >
                         CHOOSE YOUR <br className="hidden md:block" /> BATTLEFIELD
                     </h1>
 
                     <p
                         ref={subtitleRef}
-                        className="text-base md:text-lg text-cream-muted font-body tracking-[0.25em] uppercase"
+                        className="text-sm md:text-base text-text-muted font-body tracking-[0.2em] uppercase"
                     >
                         6 Arenas · One Summit · Infinite Possibilities
                     </p>
                 </div>
 
-                {/* Marquee strip */}
-                <div ref={marqueeRef} className="relative overflow-hidden py-6 mb-20 border-y border-white/5">
+                {/* Marquee */}
+                <div ref={marqueeRef} className="relative overflow-hidden py-5 mb-20 border-y border-white/6">
                     <div className="flex animate-marquee whitespace-nowrap">
                         {marqueeEvents.map((e, i) => (
-                            <span key={i} className="mx-8 text-sm md:text-base font-display font-medium text-cream-muted/40 uppercase tracking-[0.2em]">
+                            <span key={i} className="mx-8 text-sm font-display font-medium text-text-muted/50 uppercase tracking-[0.15em]">
                                 {e.title}
-                                <span className="mx-8 text-gold/30">✦</span>
+                                <span className="mx-8 text-accent-primary/30">·</span>
                             </span>
                         ))}
                     </div>
                 </div>
 
-                {/* Events Grid */}
-                <div
-                    ref={gridRef}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                >
+                {/* Grid */}
+                <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
                     {events.map((event, index) => (
-                        <div
-                            key={event.id}
-                            ref={(el) => (cardsRef.current[index] = el)}
-                        >
+                        <div key={event.id} ref={(el) => (cardsRef.current[index] = el)} className="will-animate">
                             <EventCard event={event} />
                         </div>
                     ))}
                 </div>
 
-                {/* Bottom section */}
-                <div className="mt-32 text-center space-y-4">
-                    <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-gold/30 to-transparent mx-auto" />
-                    <p className="text-xs font-body tracking-[0.3em] text-cream-muted/50 uppercase">
-                        E-Summit 2026 · Where Vision Meets Victory
+                {/* Footer */}
+                <div className="mt-28 text-center space-y-3">
+                    <div className="w-[1px] h-14 bg-gradient-to-b from-transparent via-accent-primary/15 to-transparent mx-auto" />
+                    <p className="text-xs font-body tracking-[0.2em] text-text-muted uppercase">
+                        E-Summit 2026
                     </p>
                 </div>
             </div>

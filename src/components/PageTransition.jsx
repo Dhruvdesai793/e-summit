@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useRef, useState, useEffect } from 'react'
+import React, {
+    createContext,
+    useContext,
+    useRef,
+    useState,
+    useEffect,
+    forwardRef
+} from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import gsap from 'gsap'
 
@@ -8,50 +15,100 @@ export function PageTransitionProvider({ children }) {
     const navigate = useNavigate()
     const location = useLocation()
 
-    const layer1Ref = useRef(null)
-    const layer2Ref = useRef(null)
+    const overlayRef = useRef(null)
     const textRef = useRef(null)
+    const tlRef = useRef(null)
 
     const [isAnimating, setIsAnimating] = useState(false)
-    const [label, setLabel] = useState('E-SUMMIT')
+    const [label, setLabel] = useState('')
 
     useEffect(() => {
-        gsap.set([layer1Ref.current, layer2Ref.current], { yPercent: 100 })
-        gsap.set(textRef.current, { opacity: 0, y: 20 })
+        const ctx = gsap.context(() => {
+            // Fully hidden below viewport
+            gsap.set(overlayRef.current, {
+                y: '100%',
+                visibility: 'hidden'
+            })
+
+            // Elegant subtle text offset
+            gsap.set(textRef.current, {
+                opacity: 0,
+                y: 20
+            })
+        })
+
+        return () => ctx.revert()
     }, [])
 
-    const getRouteLabel = (path) => {
-        if (path === '/home') return 'EVENTS'
-        if (path.startsWith('/events')) return 'ARENA'
-        if (path === '/about') return 'ABOUT'
-        if (path === '/contact') return 'CONTACT'
-        return 'E-SUMMIT'
-    }
-
     const triggerTransition = (to) => {
-        if (location.pathname === to || isAnimating) return
-        setIsAnimating(true)
-        setLabel(getRouteLabel(to))
+        if (!to || location.pathname === to || isAnimating) return
 
-        const tl = gsap.timeline({
+        setIsAnimating(true)
+
+        const routeLabel =
+            to === '/'
+                ? 'HOME'
+                : to.replace('/', '').replace(/-/g, ' ').toUpperCase()
+
+        setLabel(routeLabel)
+
+        if (tlRef.current) tlRef.current.kill()
+
+        tlRef.current = gsap.timeline({
             defaults: { ease: 'power4.inOut' },
             onComplete: () => {
-                gsap.set([layer1Ref.current, layer2Ref.current], { yPercent: 100 })
-                gsap.set(textRef.current, { opacity: 0, y: 20 })
+                gsap.set(overlayRef.current, {
+                    y: '100%',
+                    visibility: 'hidden'
+                })
+
+                gsap.set(textRef.current, {
+                    opacity: 0,
+                    y: 20
+                })
+
                 setIsAnimating(false)
             }
         })
 
-        tl.to(layer1Ref.current, { yPercent: 0, duration: 0.6 })
-            .to(layer2Ref.current, { yPercent: 0, duration: 0.7 }, '-=0.4')
-            .to(textRef.current, { opacity: 1, y: 0, duration: 0.3 }, '-=0.2')
-            .add(() => navigate(to))
-            .to(textRef.current, { opacity: 0, y: -20, duration: 0.25 })
-            .to([layer2Ref.current, layer1Ref.current], {
-                yPercent: -100,
-                duration: 0.7,
-                stagger: 0.05,
-                delay: 0.05
+        tlRef.current
+            // Make overlay visible instantly
+            .set(overlayRef.current, { visibility: 'visible' })
+
+            // Sweep up
+            .to(overlayRef.current, {
+                y: '0%',
+                duration: 0.7
+            })
+
+            // Elegant text reveal
+            .to(
+                textRef.current,
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.4
+                },
+                '-=0.45'
+            )
+
+            // Navigate at full coverage
+            .add(() => {
+                window.scrollTo(0, 0)
+                navigate(to)
+            })
+
+            // Text exit
+            .to(textRef.current, {
+                opacity: 0,
+                y: -20,
+                duration: 0.3
+            })
+
+            // Continue upward exit
+            .to(overlayRef.current, {
+                y: '-100%',
+                duration: 0.7
             })
     }
 
@@ -60,13 +117,22 @@ export function PageTransitionProvider({ children }) {
             {children}
 
             <div className="fixed inset-0 z-[300] pointer-events-none overflow-hidden">
-                <div ref={layer1Ref} className="absolute inset-0 bg-base" />
-                <div ref={layer2Ref} className="absolute inset-0 bg-surface" />
+                {/* 🎬 Fully Opaque Cinematic Festival Gradient */}
+                <div
+                    ref={overlayRef}
+                    className="absolute inset-0 will-change-transform"
+                    style={{
+                        background:
+                            'linear-gradient(0deg, #0a0f1c 0%, #1b263b 40%, #c44536 75%, #f4a261 100%)',
+                        pointerEvents: isAnimating ? 'all' : 'none'
+                    }}
+                />
 
+                {/* Premium Center Label */}
                 <div className="absolute inset-0 flex items-center justify-center">
                     <h2
                         ref={textRef}
-                        className="text-2xl md:text-4xl font-display font-bold tracking-[0.3em] text-gold uppercase text-glow"
+                        className="text-3xl md:text-5xl font-display font-bold tracking-[0.25em] text-accent-primary uppercase"
                     >
                         {label}
                     </h2>
@@ -80,8 +146,12 @@ export function useTransitionNavigate() {
     return useContext(PageTransitionContext)?.triggerTransition
 }
 
-export function TransitionLink({ to, children, className, onClick }) {
-    const triggerTransition = useContext(PageTransitionContext)?.triggerTransition
+export const TransitionLink = forwardRef(function TransitionLink(
+    { to, children, className, onClick },
+    ref
+) {
+    const triggerTransition =
+        useContext(PageTransitionContext)?.triggerTransition
 
     const handleClick = (e) => {
         e.preventDefault()
@@ -90,8 +160,8 @@ export function TransitionLink({ to, children, className, onClick }) {
     }
 
     return (
-        <a href={to} onClick={handleClick} className={className}>
+        <a ref={ref} href={to} onClick={handleClick} className={className}>
             {children}
         </a>
     )
-}
+})

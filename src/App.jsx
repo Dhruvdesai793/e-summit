@@ -17,8 +17,8 @@ function AppContent() {
             <div className="noise-bg" />
             <Navbar />
             <Suspense fallback={
-                <div className="h-screen w-full bg-base flex items-center justify-center">
-                    <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+                <div className="h-screen w-full bg-void flex items-center justify-center">
+                    <div className="w-7 h-7 border-2 border-accent-primary/20 border-t-accent-primary rounded-full animate-spin" />
                 </div>
             }>
                 <Routes location={location} key={location.pathname}>

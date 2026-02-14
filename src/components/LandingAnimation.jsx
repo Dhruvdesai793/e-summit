@@ -1,191 +1,152 @@
-import React, { useLayoutEffect, useRef, useCallback } from 'react'
+import React, { useRef } from 'react'
 import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
 import { useTransitionNavigate } from './PageTransition'
 
 export default function LandingAnimation() {
     const navigate = useTransitionNavigate()
     const containerRef = useRef(null)
-    const lineRef = useRef(null)
-    const wordmarkRef = useRef(null)
+    const titleRef = useRef(null)
     const taglineRef = useRef(null)
+    const infoRef = useRef(null)
     const btnRef = useRef(null)
-    const btnGlowRef = useRef(null)
-    const particlesRef = useRef(null)
+    const mountainRef = useRef(null)
+    const glowRef = useRef(null)
 
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline()
+    useGSAP(() => {
+        const tl = gsap.timeline()
 
-            gsap.set(lineRef.current, { scaleX: 0, transformOrigin: 'center center' })
-            gsap.set(wordmarkRef.current, { autoAlpha: 0, y: 30, filter: 'blur(12px)' })
-            gsap.set(taglineRef.current, { autoAlpha: 0, y: 20 })
-            gsap.set(btnRef.current, { autoAlpha: 0, y: 20 })
-            gsap.set('.landing-particle', { autoAlpha: 0, scale: 0 })
+        // Initial states
+        gsap.set(containerRef.current, { opacity: 0 })
+        gsap.set(titleRef.current, { y: 40, opacity: 0 })
+        gsap.set(taglineRef.current, { y: 20, opacity: 0 })
+        gsap.set(infoRef.current, { y: 15, opacity: 0 })
+        gsap.set(btnRef.current, { y: 15, opacity: 0 })
+        gsap.set(mountainRef.current, { opacity: 0, y: 30 })
+        gsap.set(glowRef.current, { scale: 0.8, opacity: 0 })
 
-            // Phase 1: The Line
-            tl.to(lineRef.current, {
-                scaleX: 1,
-                duration: 1.2,
-                ease: 'power3.inOut'
-            })
+        // Step 1 — Background + glow fade (0.5s)
+        tl.to(containerRef.current, {
+            opacity: 1, duration: 0.5, ease: 'power3.out'
+        })
+            .to(glowRef.current, {
+                scale: 1, opacity: 1, duration: 0.6, ease: 'power3.out'
+            }, '-=0.3')
 
-                // Phase 2: Line fades, particles burst, wordmark appears
-                .to(lineRef.current, {
-                    autoAlpha: 0,
-                    scaleX: 1.5,
-                    duration: 0.6,
-                    ease: 'power2.in'
-                })
-                .to('.landing-particle', {
-                    autoAlpha: 1,
-                    scale: 1,
-                    duration: 0.8,
-                    stagger: { amount: 0.4, from: 'random' },
-                    ease: 'back.out(2)'
-                }, '-=0.3')
-                .to(wordmarkRef.current, {
-                    autoAlpha: 1,
-                    y: 0,
-                    filter: 'blur(0px)',
-                    duration: 1.2,
-                    ease: 'expo.out'
-                }, '-=0.5')
+            // Step 2 — Mountain silhouette rises (0.5s)
+            .to(mountainRef.current, {
+                y: 0, opacity: 1, duration: 0.5, ease: 'power3.out'
+            }, '-=0.3')
 
-                // Phase 3: Tagline typewriter + button
-                .to(taglineRef.current, {
-                    autoAlpha: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: 'power3.out'
-                }, '-=0.3')
-                .to(btnRef.current, {
-                    autoAlpha: 1,
-                    y: 0,
-                    duration: 0.6,
-                    ease: 'power3.out'
-                }, '-=0.3')
+            // Step 3 — Title reveal (0.5s)
+            .to(titleRef.current, {
+                y: 0, opacity: 1, duration: 0.5, ease: 'power3.out'
+            }, '-=0.2')
 
-            // Continuous particle drift
-            gsap.to('.landing-particle', {
-                y: 'random(-30, 30)',
-                x: 'random(-20, 20)',
-                duration: 'random(4, 8)',
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
-                stagger: { amount: 3, from: 'random' }
-            })
+            // Step 4 — Tagline (0.35s)
+            .to(taglineRef.current, {
+                y: 0, opacity: 1, duration: 0.35, ease: 'power3.out'
+            }, '-=0.1')
 
-        }, containerRef)
+            // Step 5 — Info row (0.3s)
+            .to(infoRef.current, {
+                y: 0, opacity: 1, duration: 0.3, ease: 'power3.out'
+            }, '-=0.05')
 
-        return () => ctx.revert()
-    }, [])
+            // Step 6 — CTA (0.3s)
+            .to(btnRef.current, {
+                y: 0, opacity: 1, duration: 0.3, ease: 'power3.out'
+            }, '-=0.05')
 
-    const handleStart = useCallback(() => {
-        navigate('/home')
-    }, [navigate])
-
-    const handleBtnMove = useCallback((e) => {
-        if (!btnRef.current || !btnGlowRef.current) return
-        const { clientX, clientY } = e
-        const { left, top, width, height } = btnRef.current.getBoundingClientRect()
-        const x = (clientX - left - width / 2) * 0.25
-        const y = (clientY - top - height / 2) * 0.25
-
-        gsap.to(btnRef.current, { x, y, duration: 0.3, ease: 'power2.out', overwrite: 'auto' })
-        gsap.to(btnGlowRef.current, { x: x * 1.5, y: y * 1.5, opacity: 0.5, duration: 0.3, overwrite: 'auto' })
-    }, [])
-
-    const handleBtnLeave = useCallback(() => {
-        if (!btnRef.current || !btnGlowRef.current) return
-        gsap.to(btnRef.current, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)', overwrite: 'auto' })
-        gsap.to(btnGlowRef.current, { opacity: 0, duration: 0.5, overwrite: 'auto' })
-    }, [])
-
-    const particles = Array.from({ length: 14 }, (_, i) => ({
-        id: i,
-        size: Math.random() * 3 + 1,
-        top: Math.random() * 100,
-        left: Math.random() * 100,
-        delay: Math.random() * 2,
-        opacity: Math.random() * 0.5 + 0.2
-    }))
+    }, { scope: containerRef })
 
     return (
-        <div ref={containerRef} className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-base z-40">
-
-            {/* Ambient glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 rounded-full blur-[150px] pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-full h-[40%] bg-gradient-to-t from-gold/5 to-transparent pointer-events-none" />
-
-            {/* Floating particles */}
-            <div ref={particlesRef} className="absolute inset-0 pointer-events-none z-10">
-                {particles.map(p => (
-                    <div
-                        key={p.id}
-                        className="landing-particle absolute rounded-full bg-gold"
-                        style={{
-                            width: p.size + 'px',
-                            height: p.size + 'px',
-                            top: p.top + '%',
-                            left: p.left + '%',
-                            opacity: p.opacity
-                        }}
-                    />
-                ))}
+        <div
+            ref={containerRef}
+            className="relative w-full h-screen overflow-hidden flex items-center justify-center will-animate"
+            style={{
+                background: 'linear-gradient(180deg, rgba(246,189,96,0.12) 0%, #1e2a38 30%, #0f172a 100%)'
+            }}
+        >
+            {/* Golden-hour radial glow — the sunset through the boardroom window */}
+            <div ref={glowRef} className="absolute inset-0 pointer-events-none will-animate">
+                <div
+                    className="absolute top-[5%] left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full"
+                    style={{ background: 'radial-gradient(ellipse, rgba(244, 162, 97, 0.2) 0%, rgba(246,189,96,0.08) 40%, transparent 70%)' }}
+                />
+                <div
+                    className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[400px] h-[250px] rounded-full"
+                    style={{ background: 'radial-gradient(ellipse, rgba(255, 220, 140, 0.15) 0%, transparent 70%)' }}
+                />
             </div>
 
-            {/* The Golden Line */}
-            <div
-                ref={lineRef}
-                className="absolute top-1/2 left-[10%] w-[80%] h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent"
-            />
+            {/* Mountain Silhouette — layered SVG at bottom */}
+            <div ref={mountainRef} className="absolute bottom-0 left-0 w-full pointer-events-none will-animate">
+                <svg viewBox="0 0 1440 320" className="w-full" preserveAspectRatio="none" style={{ height: '200px' }}>
+                    {/* Back range — lighter */}
+                    <path
+                        d="M0,280 L120,220 L240,260 L360,180 L480,240 L600,140 L720,200 L840,120 L960,190 L1080,150 L1200,210 L1320,170 L1440,230 L1440,320 L0,320 Z"
+                        fill="rgba(30, 42, 56, 0.6)"
+                    />
+                    {/* Mid range */}
+                    <path
+                        d="M0,300 L160,250 L320,280 L480,200 L640,260 L800,170 L960,230 L1120,190 L1280,250 L1440,220 L1440,320 L0,320 Z"
+                        fill="rgba(20, 30, 45, 0.8)"
+                    />
+                    {/* Front range — darkest */}
+                    <path
+                        d="M0,310 L200,275 L400,295 L600,255 L800,290 L1000,260 L1200,285 L1440,270 L1440,320 L0,320 Z"
+                        fill="#0f172a"
+                    />
+                    {/* Summit flag — tiny detail on the tallest peak */}
+                    <line x1="840" y1="120" x2="840" y2="100" stroke="rgba(244, 162, 97, 0.6)" strokeWidth="1.5" />
+                    <polygon points="840,100 855,107 840,112" fill="rgba(244, 162, 97, 0.5)" />
+                </svg>
+            </div>
 
             {/* Content */}
-            <div className="z-50 flex flex-col items-center text-center px-6">
+            <div className="z-10 flex flex-col items-center text-center px-6 -mt-8">
 
-                {/* Logo */}
-                <div ref={wordmarkRef} className="mb-6 opacity-0">
-                    <div className="relative flex items-center justify-center mb-8">
-                        <div className="absolute w-28 h-28 md:w-36 md:h-36 bg-gold/10 rounded-full blur-[40px] animate-pulse-glow" />
-                        <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full glass-gold flex items-center justify-center glow-gold">
-                            <img src="/logo/logo.png" alt="E-Summit" className="w-[65%] h-[65%] object-contain" />
-                        </div>
-                    </div>
+                <h1
+                    ref={titleRef}
+                    className="text-7xl md:text-9xl lg:text-[10rem] font-display font-bold tracking-[-0.05em] leading-[0.85] text-white will-animate"
+                    style={{ textShadow: '0 0 80px rgba(244, 162, 97, 0.15)' }}
+                >
+                    E-SUMMIT
+                </h1>
 
-                    <h1 className="text-7xl md:text-9xl font-display font-bold tracking-[-0.04em] leading-none text-gradient-gold text-glow">
-                        E-SUMMIT
-                    </h1>
-                </div>
-
-                {/* Tagline */}
                 <p
                     ref={taglineRef}
-                    className="text-lg md:text-xl text-cream-muted font-body tracking-[0.3em] uppercase opacity-0 mb-12"
+                    className="mt-5 text-accent-primary tracking-[0.35em] text-xs md:text-sm uppercase font-body font-medium will-animate"
                 >
                     Where Vision Meets Victory
                 </p>
 
-                {/* CTA Button */}
-                <div className="relative group" onMouseMove={handleBtnMove} onMouseLeave={handleBtnLeave}>
-                    <div ref={btnGlowRef} className="absolute -inset-4 bg-gold/30 rounded-full blur-2xl opacity-0 pointer-events-none transition-opacity" />
-                    <button
-                        ref={btnRef}
-                        onClick={handleStart}
-                        className="relative px-10 py-4 rounded-full font-display font-semibold text-sm tracking-[0.2em] uppercase cursor-pointer opacity-0 overflow-hidden border border-gold/40 bg-gold/10 text-gold-light hover:bg-gold/20 transition-colors duration-300"
-                    >
-                        <span className="relative z-10 flex items-center gap-3">
-                            Enter Summit
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </span>
-                    </button>
+                {/* Date | Venue | Time — inspired by the poster */}
+                <div
+                    ref={infoRef}
+                    className="mt-6 flex items-center gap-4 text-text-muted font-body text-xs md:text-sm tracking-[0.15em] uppercase will-animate"
+                >
+                    <span className="text-text-secondary">Feb 2026</span>
+                    <span className="text-accent-primary/40">|</span>
+                    <span className="text-text-secondary">Nirma University</span>
+                    <span className="text-accent-primary/40">|</span>
+                    <span className="text-text-secondary">3 Days</span>
                 </div>
-            </div>
 
-            {/* Bottom gradient fade */}
-            <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-base to-transparent pointer-events-none z-30" />
+                <button
+                    ref={btnRef}
+                    onClick={() => navigate('/home')}
+                    className="mt-10 px-8 py-3.5 rounded-full font-display font-semibold text-sm tracking-[0.15em] uppercase cursor-pointer border border-accent-primary/30 bg-accent-primary/8 text-accent-primary hover:bg-accent-primary/15 hover:border-accent-primary/50 transition-all duration-300 will-animate"
+                >
+                    Enter Summit →
+                </button>
+
+                {/* e-cell branding — from the poster */}
+                <p className="mt-16 text-[10px] tracking-[0.2em] text-text-muted/40 uppercase font-body">
+                    e-cell · Nirma University
+                </p>
+            </div>
         </div>
     )
 }
