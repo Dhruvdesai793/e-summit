@@ -24,13 +24,11 @@ export function PageTransitionProvider({ children }) {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Fully hidden below viewport
             gsap.set(overlayRef.current, {
                 y: '100%',
                 visibility: 'hidden'
             })
 
-            // Elegant subtle text offset
             gsap.set(textRef.current, {
                 opacity: 0,
                 y: 20
@@ -72,16 +70,13 @@ export function PageTransitionProvider({ children }) {
         })
 
         tlRef.current
-            // Make overlay visible instantly
             .set(overlayRef.current, { visibility: 'visible' })
 
-            // Sweep up
             .to(overlayRef.current, {
                 y: '0%',
                 duration: 0.7
             })
 
-            // Elegant text reveal
             .to(
                 textRef.current,
                 {
@@ -92,20 +87,17 @@ export function PageTransitionProvider({ children }) {
                 '-=0.45'
             )
 
-            // Navigate at full coverage
             .add(() => {
                 window.scrollTo(0, 0)
                 navigate(to)
             })
 
-            // Text exit
             .to(textRef.current, {
                 opacity: 0,
                 y: -20,
                 duration: 0.3
             })
 
-            // Continue upward exit
             .to(overlayRef.current, {
                 y: '-100%',
                 duration: 0.7
@@ -117,7 +109,6 @@ export function PageTransitionProvider({ children }) {
             {children}
 
             <div className="fixed inset-0 z-[300] pointer-events-none overflow-hidden">
-                {/* 🎬 Fully Opaque Cinematic Festival Gradient */}
                 <div
                     ref={overlayRef}
                     className="absolute inset-0 will-change-transform"
@@ -128,7 +119,6 @@ export function PageTransitionProvider({ children }) {
                     }}
                 />
 
-                {/* Premium Center Label */}
                 <div className="absolute inset-0 flex items-center justify-center">
                     <h2
                         ref={textRef}

@@ -12,7 +12,6 @@ export default function Navbar() {
     const linksRef = useRef([])
     const location = useLocation()
 
-    // Bug Fix: hide navbar on landing page
     const isLanding = location.pathname === '/'
 
     const navLinks = useMemo(() => [
@@ -21,7 +20,6 @@ export default function Navbar() {
         { name: 'Contact', path: '/contact' },
     ], [])
 
-    // Slide in from top
     useGSAP(() => {
         if (isLanding) return
         gsap.from(navRef.current, {
@@ -33,7 +31,6 @@ export default function Navbar() {
         })
     }, { scope: navRef, dependencies: [isLanding] })
 
-    // Scroll effect — rAF
     useEffect(() => {
         if (isLanding) return
         let ticking = false
@@ -49,13 +46,11 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [isLanding])
 
-    // Body scroll lock
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : ''
         return () => { document.body.style.overflow = '' }
     }, [isOpen])
 
-    // Mobile stagger
     useEffect(() => {
         if (isOpen && linksRef.current.length) {
             gsap.from(linksRef.current.filter(Boolean), {
@@ -71,7 +66,6 @@ export default function Navbar() {
 
     const toggleMenu = useCallback(() => setIsOpen(prev => !prev), [])
 
-    // Don't render on landing page
     if (isLanding) return null
 
     return (
@@ -90,14 +84,12 @@ export default function Navbar() {
                         border: `1px solid ${scrolled ? 'rgba(244, 162, 97, 0.15)' : 'rgba(255, 255, 255, 0.06)'}`,
                     }}
                 >
-                    {/* Logo */}
                     <TransitionLink to="/" className="relative group">
                         <span className="text-lg md:text-xl font-display font-bold tracking-[-0.02em] text-white group-hover:text-accent-primary transition-colors duration-300">
                             E-SUMMIT
                         </span>
                     </TransitionLink>
 
-                    {/* Desktop Nav */}
                     <div className="hidden md:flex items-center gap-1">
                         {navLinks.map((link, i) => {
                             const isActive = location.pathname === link.path
@@ -119,7 +111,6 @@ export default function Navbar() {
                         })}
                     </div>
 
-                    {/* Hamburger */}
                     <button
                         onClick={toggleMenu}
                         className="md:hidden flex flex-col gap-[5px] p-2 z-50 cursor-pointer"
@@ -132,7 +123,6 @@ export default function Navbar() {
                 </div>
             </nav>
 
-            {/* Mobile Overlay */}
             {isOpen && (
                 <div
                     className="fixed inset-0 z-[45] flex flex-col items-center justify-center gap-10"

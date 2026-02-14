@@ -89,7 +89,6 @@ export default function EventPage() {
 
             <div className="max-w-7xl mx-auto px-6 pt-32 pb-32 relative z-10 flex flex-col lg:flex-row gap-16">
 
-                {/* Side Nav */}
                 <div className="hidden lg:block w-48 shrink-0 relative">
                     <div className="sticky top-32 space-y-8">
                         <TransitionLink to="/home" className="inline-flex items-center text-text-muted hover:text-accent-primary transition-colors mb-8 group text-sm font-body">
@@ -118,7 +117,6 @@ export default function EventPage() {
                     </div>
                 </div>
 
-                {/* Content */}
                 <div className="flex-1 space-y-24" ref={contentRef}>
 
                     <div ref={heroRef} className="text-center lg:text-left">

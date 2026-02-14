@@ -37,7 +37,7 @@ export default function EventCard({ event }) {
                 onMouseLeave={onLeave}
                 className="relative overflow-hidden rounded-2xl cursor-pointer h-[420px] bg-surface border border-white/6 will-animate group"
             >
-                {/* Image */}
+
                 <div className="h-full w-full overflow-hidden">
                     <img
                         ref={imageRef}
@@ -48,10 +48,10 @@ export default function EventCard({ event }) {
                     />
                 </div>
 
-                {/* Gradient overlay */}
+
                 <div className="absolute inset-0 bg-gradient-to-t from-void via-void/60 to-transparent opacity-90" />
 
-                {/* Content */}
+
                 <div className="absolute bottom-0 p-8 w-full">
                     <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-2 leading-tight">
                         {event.title}

@@ -1,40 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-/* ─── E-SUMMIT DESIGN SYSTEM ─── */
 @theme {
-  /* Core Background (Summit Atmosphere) */
   --color-void: #0f172a;
   --color-void-light: #1e293b;
 
-  /* Surfaces (Conference Interior) */
   --color-surface: #1e2a38;
   --color-surface-light: #2c3e50;
 
-  /* Primary Accents (Sunset Energy) */
   --color-accent-primary: #f4a261;
   --color-accent-secondary: #f6bd60;
   --color-accent-tertiary: #4cc9f0;
 
-  /* Wood Tones */
   --color-wood-base: #7a4e2d;
   --color-wood-light: #a47148;
 
-  /* Text System */
   --color-text-primary: #ffffff;
   --color-text-secondary: #e2e8f0;
   --color-text-muted: #94a3b8;
 
-  /* Glass / Elevation */
   --color-glass-surface: rgba(255, 255, 255, 0.04);
   --color-glass-border: rgba(244, 162, 97, 0.25);
 
-  /* Typography */
   --font-display: "Space Grotesk", sans-serif;
   --font-body: "Poppins", sans-serif;
 }
 
-/* ─── BASE ─── */
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -56,7 +47,6 @@ body {
   color: #ffffff;
 }
 
-/* ─── NOISE ─── */
 .noise-bg {
   position: fixed;
   inset: 0;
@@ -67,7 +57,6 @@ body {
   mix-blend-mode: overlay;
 }
 
-/* ─── GLASS ─── */
 .glass {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(20px);
@@ -82,7 +71,6 @@ body {
   border: 1px solid rgba(244, 162, 97, 0.2);
 }
 
-/* ─── GRADIENTS ─── */
 .text-gradient-sunrise {
   background: linear-gradient(135deg, #f4a261 0%, #f6bd60 50%, #4cc9f0 100%);
   -webkit-background-clip: text;
@@ -105,7 +93,6 @@ body {
   background: linear-gradient(180deg, rgba(246, 189, 96, 0.1) 0%, #1e2a38 35%, #0f172a 100%);
 }
 
-/* ─── GLOW ─── */
 .glow-warm {
   box-shadow: 0 0 30px rgba(244, 162, 97, 0.12), 0 0 60px rgba(244, 162, 97, 0.04);
 }
@@ -114,12 +101,10 @@ body {
   box-shadow: 0 0 20px rgba(244, 162, 97, 0.25), 0 0 50px rgba(244, 162, 97, 0.1);
 }
 
-/* ─── PERFORMANCE ─── */
 .will-animate {
   will-change: transform, opacity;
 }
 
-/* ─── SCROLLBAR ─── */
 ::-webkit-scrollbar {
   width: 5px;
 }

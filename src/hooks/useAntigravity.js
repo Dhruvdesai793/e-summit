@@ -2,9 +2,6 @@ import { useRef, useCallback } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 
-/**
- * Float — gentle y-axis bob.
- */
 export function useFloat(ref, options = {}) {
     const { y = 8, duration = 3, ease = 'sine.inOut' } = options
 
@@ -20,9 +17,6 @@ export function useFloat(ref, options = {}) {
     }, { scope: ref })
 }
 
-/**
- * Magnetic — element follows cursor then snaps back.
- */
 export function useMagnetic(ref, options = {}) {
     const { strength = 0.3, snapEase = 'power2.out' } = options
 
